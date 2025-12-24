@@ -1,60 +1,27 @@
-{{- if .Values.deployPostgres }}
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{.Values.postgres.serviceName}}
-  namespace: {{ .Values.namespace }}
-spec:
-  clusterIP: None
-  selector:
-    app: {{.Values.postgres.appLabel}}
-  ports:
-    - port: {{.Values.postgres.port}}
-      targetPort: {{.Values.postgres.port}}
 
----
+{{- if .Values.postgres.enabled }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{.Values.postgres.statefulSetName}}
-  namespace: {{ .Values.namespace }}
+  name: {{ .Values.postgres.name }}
+  namespace: {{ .Values.postgres.namespace }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  serviceName: {{ .Values.postgres.serviceName}}
+  replicas: {{ .Values.postgres.replica }}
   selector:
     matchLabels:
-      app: {{.Values.postgres.appLabel}}
+      app: {{ .Values.postgres.labels }}
   template:
     metadata:
       labels:
-        app: {{.Values.postgres.appLabel}}
+        app: {{ .Values.postgres.labels }}
     spec:
       containers:
         - name: postgres
-          image: "{{ .Values.image2.repository }}"  
+          image: "{{ .Values.postgres.image.repository }}:{{ .Values.postgres.image.tag }}"
           ports:
-            - containerPort: {{.Values.postgres.port}}
+            - containerPort: {{ .Values.postgres.service.port}}
           envFrom:
-          - configMapRef:
-              name: {{.Values.config.name}}
-          - secretRef:
-              name: {{ .Values.secrets.name}}
-          volumeMounts:
-            - name: postgres-storage2
-              mountPath: /var/lib/postgresql/data
-  volumeClaimTemplates:
-    - metadata:
-        name: postgres-storage2
-      spec:
-        accessModes: ["ReadWriteOnce"] #change 
-        resources:
-          requests:
-            storage: {{ .Values.postgres.storage }}
+            - secretRef:
+                name: postgres-secret
 {{- end }}
-
-
-
-
-
-
-
-

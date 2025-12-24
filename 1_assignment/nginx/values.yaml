@@ -6,7 +6,7 @@ image:
   pullPolicy: IfNotPresent
 
 service:
+  protocol: TCP
   type: ClusterIP
   port: 80
-
-containerPort: 80
+  

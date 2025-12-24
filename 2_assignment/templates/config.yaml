@@ -1,11 +1,13 @@
-{{- if .Values.deployPostgres }}
+
+
+{{- if .Values.backend.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{.Values.config.name}}
-  namespace: {{ .Values.namespace }}
+  name: {{.Values.backend.configname}}
+  namespace: {{ .Values.backend.namespace }}
 data:
-  DB_HOST: postgres2
-  DB_PORT: "5432"
-
+{{- range $key, $value := .Values.backend.configmap }}
+  {{ $key }}: {{ $value | quote }}
+{{- end }}
 {{- end }}

@@ -1,46 +1,28 @@
-
-{{- if .Values.deployBackend }}
-
+ 
+{{- if .Values.backend.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{.Values.deployment.name}}
-  namespace: {{ .Values.namespace }}
+  name: {{ .Values.backend.name }}
+  namespace: {{ .Values.backend.namespace }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.backend.replica }}
   selector:
     matchLabels:
-      app: {{ .Values.deployment.app }}
+      app: {{ .Values.backend.labels }}
   template:
     metadata:
       labels:
-        app: {{ .Values.deployment.app }}
+        app: {{ .Values.backend.labels }}
     spec:
       containers:
         - name: backend
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
           ports:
-            - containerPort: {{ .Values.deployment.port }}
+            - containerPort: 3000
           envFrom:
-          - configMapRef:
-              name: {{.Values.config.name}}
-          - secretRef:
-              name: {{ .Values.secrets.name}}
----
-
-#  Service
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ .Values.deployment.servicename }}
-  namespace: {{ .Values.namespace }}
-spec:
-  selector:
-    app: {{ .Values.deployment.app }}
-  ports:
-    - protocol: TCP
-      port: {{ .Values.deployment.port }}
-      targetPort: {{ .Values.deployment.port }}
-  type: ClusterIP
-
+            - configMapRef:
+                name: {{.Values.backend.configname}}
+            - secretRef:
+                name: backend-secret
 {{- end }}

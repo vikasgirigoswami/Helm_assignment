@@ -1,0 +1,23 @@
+#deployment
+backend:
+  enabled: true
+  image:
+    repository: vikasgirigoswami/last
+    tag: latest
+  replica: 1
+  namespace: 2-assignment
+  labels: backend
+  name: backend
+  service:
+    port: 3000
+    name: backend
+  configmap:
+    DB_HOST: postgres
+    DB_PORT: "5432"
+  secret:
+    POSTGRES_USER: vikas
+    POSTGRES_PASSWORD: admin123
+    POSTGRES_DB: mydb
+  configname: backend-config
+postgres:
+  enabled: false
