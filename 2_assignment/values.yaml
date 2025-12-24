@@ -1,0 +1,39 @@
+namespace: 2-assignment
+
+replicaCount: 1
+
+# postgres
+image2:
+  repository: postgres:16
+
+postgres:
+  user: vikas
+  password: admin123
+  db: mydb
+  storage: 1Gi
+  serviceName: postgres2
+  statefulSetName: dbstatefulset
+  port: 5432
+  secretName: postgres-secret2
+  volumeName: postgres-storage2
+  appLabel: postgres
+
+
+
+#deployment
+image:
+  repository: vikasgirigoswami/last
+  tag: latest
+deployment:
+  name: deployment
+  app: backend
+  port: 3000
+  servicename: backend-service
+
+#secret
+secrets:
+  name: secret
+
+#configmap
+config:
+  name: config

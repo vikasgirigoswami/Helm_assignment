@@ -1,0 +1,46 @@
+
+{{- if .Values.deployBackend }}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.Values.deployment.name}}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.deployment.app }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.deployment.app }}
+    spec:
+      containers:
+        - name: backend
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.deployment.port }}
+          envFrom:
+          - configMapRef:
+              name: {{.Values.config.name}}
+          - secretRef:
+              name: {{ .Values.secrets.name}}
+---
+
+#  Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.deployment.servicename }}
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: {{ .Values.deployment.app }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.deployment.port }}
+      targetPort: {{ .Values.deployment.port }}
+  type: ClusterIP
+
+{{- end }}

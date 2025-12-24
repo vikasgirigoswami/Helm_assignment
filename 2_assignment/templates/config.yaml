@@ -1,0 +1,11 @@
+{{- if .Values.deployPostgres }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{.Values.config.name}}
+  namespace: {{ .Values.namespace }}
+data:
+  DB_HOST: postgres2
+  DB_PORT: "5432"
+
+{{- end }}
