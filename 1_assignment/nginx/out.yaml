@@ -1,0 +1,38 @@
+---
+# Source: nginx-chart/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: vikas-nginx
+spec:
+  type: ClusterIP
+  selector:
+    app: vikas-nginx
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+# Source: nginx-chart/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vikas-nginx
+  labels:
+    app: vikas-nginx
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: vikas-nginx
+  template:
+    metadata:
+      labels:
+        app: vikas-nginx
+    spec:
+      containers:
+        - name: nginx
+          image: "nginx:1.23.0"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80

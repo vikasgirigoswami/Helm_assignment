@@ -1,0 +1,60 @@
+{{- if .Values.deployPostgres }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{.Values.postgres.serviceName}}
+  namespace: {{ .Values.namespace }}
+spec:
+  clusterIP: None
+  selector:
+    app: {{.Values.postgres.appLabel}}
+  ports:
+    - port: {{.Values.postgres.port}}
+      targetPort: {{.Values.postgres.port}}
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{.Values.postgres.statefulSetName}}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{.Values.postgres.appLabel}}
+  template:
+    metadata:
+      labels:
+        app: {{.Values.postgres.appLabel}}
+    spec:
+      containers:
+        - name: postgres
+          image: "{{ .Values.image2.repository }}"  
+          ports:
+            - containerPort: {{.Values.postgres.port}}
+          envFrom:
+          - configMapRef:
+              name: {{.Values.config.name}}
+          - secretRef:
+              name: {{ .Values.secrets.name}}
+          volumeMounts:
+            - name: postgres-storage2
+              mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-storage2
+      spec:
+        accessModes: ["ReadWriteOnce"] #change 
+        resources:
+          requests:
+            storage: {{ .Values.postgres.storage }}
+{{- end }}
+
+
+
+
+
+
+
+
