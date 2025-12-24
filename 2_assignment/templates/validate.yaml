@@ -1,0 +1,3 @@
+{{- if not (or .Values.backend.enabled .Values.postgres.enabled) }}
+{{- fail "ERROR: No component is selected so please truw anyone" }}
+{{- end }}

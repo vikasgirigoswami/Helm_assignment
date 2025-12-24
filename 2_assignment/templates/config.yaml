@@ -1,0 +1,13 @@
+
+
+{{- if .Values.backend.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{.Values.backend.configname}}
+  namespace: {{ .Values.backend.namespace }}
+data:
+{{- range $key, $value := .Values.backend.configmap }}
+  {{ $key }}: {{ $value | quote }}
+{{- end }}
+{{- end }}

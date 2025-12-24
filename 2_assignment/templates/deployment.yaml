@@ -1,0 +1,28 @@
+ 
+{{- if .Values.backend.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.backend.name }}
+  namespace: {{ .Values.backend.namespace }}
+spec:
+  replicas: {{ .Values.backend.replica }}
+  selector:
+    matchLabels:
+      app: {{ .Values.backend.labels }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.backend.labels }}
+    spec:
+      containers:
+        - name: backend
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: {{.Values.backend.configname}}
+            - secretRef:
+                name: backend-secret
+{{- end }}

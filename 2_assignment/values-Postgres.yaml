@@ -1,0 +1,20 @@
+#DB
+postgres:
+  enabled: true
+  namespace: 2-assignment
+  name: postgres
+  image:
+    repository: postgres
+    tag: "16"
+  replica: 1
+  serviceName: postgres
+  labels: postgres
+  service:
+    port: 5432
+  secret:
+    POSTGRES_USER: vikas
+    POSTGRES_PASSWORD: admin123
+    POSTGRES_DB: mydb
+
+backend:
+  enabled: false

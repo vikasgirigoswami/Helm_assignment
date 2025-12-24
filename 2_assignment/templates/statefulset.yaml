@@ -1,0 +1,27 @@
+
+{{- if .Values.postgres.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Values.postgres.name }}
+  namespace: {{ .Values.postgres.namespace }}
+spec:
+  serviceName: {{ .Values.postgres.serviceName}}
+  replicas: {{ .Values.postgres.replica }}
+  selector:
+    matchLabels:
+      app: {{ .Values.postgres.labels }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.postgres.labels }}
+    spec:
+      containers:
+        - name: postgres
+          image: "{{ .Values.postgres.image.repository }}:{{ .Values.postgres.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.postgres.service.port}}
+          envFrom:
+            - secretRef:
+                name: postgres-secret
+{{- end }}
